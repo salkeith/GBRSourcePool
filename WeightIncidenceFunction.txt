@@ -1,0 +1,22 @@
+# SK 06/08/2014
+
+# Function to convert incidence into weights for random draw.
+# Weights are "probabilities", as requested by sample function.
+# na.divide = for species not present in the incidence data, replace
+# with the minimum weight divided by this number.
+
+weight.inc <- function(inc,cols,na.divide){
+   tran.w <- round(inc[,cols[1]]/sum(inc[,cols[1]],na.rm=T),4)
+   rep.na <- min(tran.w,na.rm=T)/na.divide
+   tran.w[is.na(tran.w)] <- rep.na
+   site.w <- round(inc[,cols[2]]/sum(inc[,cols[2]],na.rm=T),4)
+   rep.na <- min(site.w,na.rm=T)/na.divide
+   site.w[is.na(site.w)] <- rep.na
+   reef.w <- round(inc[,cols[3]]/sum(inc[,cols[3]],na.rm=T),4)
+   rep.na <- min(reef.w,na.rm=T)/na.divide
+   reef.w[is.na(reef.w)] <- rep.na
+   collect.weights <- cbind(tran.w,site.w,reef.w)
+   weight.inc.res <- cbind(inc,collect.weights)
+   colnames(weight.inc.res) <- c(colnames(inc)[1:cols[3]],"transects.w","sites.w","reefs.w")
+   return(weight.inc.res)
+}
